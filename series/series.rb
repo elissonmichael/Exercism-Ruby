@@ -6,11 +6,6 @@ class Series
   def slices(size)
     raise ArgumentError if size > @numbers.size
 
-    series = []
-    for index in 0..@numbers.size
-      slice = @numbers.slice(index, size)
-      series << slice.join if slice.size.eql?(size)
-    end
-    series
+    @numbers.each_cons(size).map(&:join)
   end
 end
