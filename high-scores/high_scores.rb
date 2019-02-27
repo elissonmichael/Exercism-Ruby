@@ -5,16 +5,14 @@ class HighScores
   end
 
   def latest
-    @scores.last
+    scores.last
   end
 
   def personal_best
-    @scores.max
+    scores.max
   end
 
   def personal_top_three
-    top_three = @scores.sort
-    top_three = top_three.drop(@scores.size - 3) if @scores.size > 3
-    top_three.reverse
+    scores.max(3)
   end
 end
