@@ -7,6 +7,6 @@ end
 class Hamming
   def self.compute(strand1, strand2)
     raise StrandLengthError unless strand1.size.eql?(strand2.size)
-    (0..strand1.size).count { |index| strand1[index] != strand2[index] }
+    strand1.chars.zip(strand2.chars).count { |pair| pair.first != pair.last }
   end
 end
