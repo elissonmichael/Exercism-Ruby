@@ -1,10 +1,6 @@
 class Isogram
   def self.isogram?(string)
-    @input = string
+    chars = string.downcase.scan(/\w/)
     chars.eql?(chars.uniq)
-  end
-
-  def self.chars
-    @input.downcase.scan(/\w/)
   end
 end
