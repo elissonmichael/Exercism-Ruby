@@ -1,4 +1,14 @@
+module ImprovedInteger
+  refine Integer do
+    def divisible_by?(number)
+      (self % number).zero?
+    end
+  end
+end
+
 class Luhn
+  using ImprovedInteger
+
   def self.valid?(string)
     new(string).valid?
   end
@@ -11,12 +21,22 @@ class Luhn
   def valid?
     return false if input.strip.size < 2 || include_non_digits?
 
-    digits.map
-          .with_index { |number, index| index.odd? ? number.double : number }
-          .sum.divisible_by?(10)
+    checksum.divisible_by?(10)
   end
 
   private
+
+  def checksum
+    digits.each_slice(2).map { |d1, d2| [d1, double(d2)] }.flatten.sum
+  end
+
+  def double(integer)
+    return 0 unless integer
+
+    double = integer * 2
+    double -= 9 if double > 9
+    double
+  end
 
   def include_non_digits?
     !input.delete(' ').scan(/\D/).empty?
@@ -24,17 +44,5 @@ class Luhn
 
   def digits
     input.scan(/\d/).join.to_i.digits
-  end
-end
-
-class Integer
-  def double
-    double = self * 2
-    double -= 9 if double > 9
-    double
-  end
-
-  def divisible_by?(number)
-    (self % number).zero?
   end
 end
