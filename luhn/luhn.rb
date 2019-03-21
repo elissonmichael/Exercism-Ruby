@@ -13,7 +13,7 @@ class Luhn
     new(string).valid?
   end
 
-  attr_reader :input
+  attr_accessor :input
   def initialize(string)
     @input = string
   end
@@ -27,19 +27,17 @@ class Luhn
   private
 
   def checksum
-    digits.each_slice(2).map { |d1, d2| [d1, double(d2)] }.flatten.sum
+    digits.each_slice(2).sum { |d1, d2 = 0| d1 + double(d2) }
   end
 
   def double(integer)
-    return 0 unless integer
-
     double = integer * 2
     double -= 9 if double > 9
     double
   end
 
   def include_non_digits?
-    !input.delete(' ').scan(/\D/).empty?
+    input.delete(' ').scan(/\D/).any?
   end
 
   def digits
