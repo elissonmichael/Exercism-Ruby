@@ -1,14 +1,26 @@
-module ImprovedInteger
-  refine Integer do
-    def divisible_by?(number)
-      (self % number).zero?
-    end
-  end
-end
-
 class Year
-  using ImprovedInteger
   def self.leap?(year)
-    year.divisible_by?(4) && !year.divisible_by?(100) || year.divisible_by?(400)
+    new(year).leap?
+  end
+
+  attr_reader :year
+  def initialize(year)
+    @year = year
+  end
+
+  def leap?
+    leap_century? or not century? and quad_year?
+  end
+
+  def leap_century?
+    (year % 400).zero?
+  end
+
+  def century?
+    (year % 100).zero?
+  end
+
+  def quad_year?
+    (year % 4).zero?
   end
 end
