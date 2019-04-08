@@ -1,12 +1,12 @@
 class Bob
   def self.hey(remark)
-    remark = Remark.new(remark)
-    return "Calm down, I know what I'm doing!" if remark.yelling_question?
-    return 'Sure.'                             if remark.question?
-    return 'Whoa, chill out!'                  if remark.yell?
-    return 'Fine. Be that way!'                if remark.empty?
-
-    'Whatever.'
+    case Remark.new(remark)
+    when :yelling_question?.to_proc then "Calm down, I know what I'm doing!"
+    when :question?.to_proc         then 'Sure.'
+    when :yell?.to_proc             then 'Whoa, chill out!'
+    when :empty?.to_proc            then 'Fine. Be that way!'
+    else 'Whatever.'
+    end
   end
 end
 
