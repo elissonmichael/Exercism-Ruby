@@ -6,7 +6,7 @@ end
 
 class Translation
   def self.of_codon(string)
-    Codon.new(string).translate
+    Codon.new(string).protein
   end
 
   def self.of_rna(strand)
@@ -19,15 +19,7 @@ class Translation
   end
 
   def of_rna
-    if proteins.include?('STOP')
-      proteins[0..proteins.index('STOP').pred]
-    else
-      proteins
-    end
-  end
-
-  def proteins
-    strand.codons.map(&:translate)
+    strand.codons.map(&:protein).take_while { |protein| protein != 'STOP' }
   end
 end
 
@@ -43,24 +35,25 @@ class Strand
 end
 
 class Codon
-  CODON_PROTEIN = { 'AUG' => 'Methionine', 'UUU' => 'Phenylalanine',
-                    'UUC' => 'Phenylalanine', 'UUA' => 'Leucine',
-                    'UUG' => 'Leucine', 'UCU' => 'Serine', 'UCC' => 'Serine',
-                    'UCA' => 'Serine',  'UCG' => 'Serine', 'UAU' => 'Tyrosine',
-                    'UAC' => 'Tyrosine', 'UGU' => 'Cysteine',
-                    'UGC' => 'Cysteine', 'UGG' => 'Tryptophan', 'UAA' => 'STOP',
-                    'UAG' => 'STOP', 'UGA' => 'STOP' }.freeze
+  CODON_TO_PROTEIN = { 'AUG' => 'Methionine', 'UUU' => 'Phenylalanine',
+                       'UUC' => 'Phenylalanine', 'UUA' => 'Leucine',
+                       'UUG' => 'Leucine', 'UCU' => 'Serine', 'UCC' => 'Serine',
+                       'UCA' => 'Serine',  'UCG' => 'Serine',
+                       'UAU' => 'Tyrosine', 'UAC' => 'Tyrosine',
+                       'UGU' => 'Cysteine', 'UGC' => 'Cysteine',
+                       'UGG' => 'Tryptophan', 'UAA' => 'STOP', 'UAG' => 'STOP',
+                       'UGA' => 'STOP' }.freeze
   attr_reader :input
   def initialize(string)
     @input = string
   end
 
-  def translate
-    valid?
-    CODON_PROTEIN[input]
+  def protein
+    validate!
+    CODON_TO_PROTEIN[input]
   end
 
-  def valid?
-    raise InvalidCodonError unless CODON_PROTEIN.key?(input)
+  def validate!
+    raise InvalidCodonError unless CODON_TO_PROTEIN.key?(input)
   end
 end
